@@ -1,6 +1,6 @@
 package de.embl.endpoints;
 
-import de.embl.utils.Sorting;
+import de.embl.helper.AccessionHelper;
 import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Created by rafaelmm on 18/07/17.
@@ -34,46 +33,23 @@ public class SortEndpoint {
     public String sort(@RequestBody String accessionNumbers ){
         List<String> result = new ArrayList<String>();
 
-        List<String> accessionList = Pattern.compile(",")
-                .splitAsStream(accessionNumbers)
-                .map(String::trim)
-                .collect(Collectors.toList());
-
-        Sorting s = new Sorting();
-
-        accessionList = s.sort(accessionList);
+        List<String> accessionList = AccessionHelper.splitAccessions(accessionNumbers);
+        accessionList = AccessionHelper.sort(accessionList);
 
         accessionList.forEach(item->{
+             if (result.isEmpty()) {
+                 result.add(item);
+                 return;
+             }
 
-            if (result.isEmpty()) {
-                result.add(item);
-                return;
-            }
-
-            String lastItem = result.get(result.size()-1);
-            if (lastItem.contains("-")){
-                lastItem = Pattern.compile("-")
-                        .splitAsStream(lastItem)
-                        .map(String::trim)
-                        .collect(Collectors.toList()).get(1);
-            }
-
-            if (s.isSequentialAssessions(lastItem, item) ){
-                if (result.get(result.size()-1).contains("-")) {
-                    String startValue = Pattern.compile("-")
-                            .splitAsStream(result.get(result.size() - 1))
-                            .map(String::trim)
-                            .collect(Collectors.toList()).get(0);
-                    result.remove(result.size() - 1);
-                    result.add(startValue + "-" + item);
-                }else {
-                    result.remove(result.size() - 1);
-                    result.add(lastItem + "-" + item);
-                }
+            String lastItem = AccessionHelper.getLastItem(result.get(result.size()-1));
+            if (AccessionHelper.isSequentialAssessions(lastItem, item) ){
+                String startValue = AccessionHelper.getFirstItem(result.get(result.size()-1));
+                result.remove(result.size() - 1);
+                result.add(startValue + "-" + item);
             }else {
                 result.add(item);
             }
-
         });
 
 
