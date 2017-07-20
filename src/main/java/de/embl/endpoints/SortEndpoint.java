@@ -1,16 +1,16 @@
 package de.embl.endpoints;
 
 import de.embl.helper.AccessionHelper;
+import de.embl.request.SortBodyRequest;
+import de.embl.request.validator.SortBodyValidator;
 import org.apache.log4j.Logger;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Created by rafaelmm on 18/07/17.
@@ -21,6 +21,14 @@ public class SortEndpoint {
 
     private static final Logger logger = Logger.getLogger(SortEndpoint.class);
 
+    @Autowired
+    private SortBodyValidator sortBodyValidator;
+
+    @InitBinder
+    private void initBinder(WebDataBinder binder) {
+        binder.setValidator(sortBodyValidator);
+    }
+
     /**
      *
      * @param String to be sorted
@@ -28,12 +36,14 @@ public class SortEndpoint {
      */
     @RequestMapping(value = "",
             method = RequestMethod.POST,
-            consumes = "text/plain",
-            produces="text/plain")
-    public String sort(@RequestBody String accessionNumbers ){
+            consumes = "application/json",
+            produces="application/json")
+    public SortBodyRequest sort(@RequestBody @Valid SortBodyRequest body ){
+
+        logger.debug("Request: " + body.getText());
         List<String> result = new ArrayList<String>();
 
-        List<String> accessionList = AccessionHelper.splitAccessions(accessionNumbers);
+        List<String> accessionList = AccessionHelper.splitAccessions(body.getText());
         accessionList = AccessionHelper.sort(accessionList);
 
         accessionList.forEach(item->{
@@ -53,6 +63,8 @@ public class SortEndpoint {
         });
 
 
-        return String.join(",", result);
+        return new SortBodyRequest(String.join(",", result));
     }
+
 }
+
