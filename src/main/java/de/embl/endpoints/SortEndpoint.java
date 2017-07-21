@@ -1,16 +1,15 @@
 package de.embl.endpoints;
 
-import de.embl.helper.AccessionHelper;
-import de.embl.request.SortBodyRequest;
-import de.embl.request.validator.SortBodyValidator;
+import de.embl.handler.AccessionHandlerImpl;
+import de.embl.endpoints.entity.SortBodyEntity;
+import de.embl.endpoints.entity.validator.SortBodyValidator;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.inject.Inject;
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by rafaelmm on 18/07/17.
@@ -21,6 +20,9 @@ public class SortEndpoint {
 
     private static final Logger logger = Logger.getLogger(SortEndpoint.class);
 
+    @Inject
+    private AccessionHandlerImpl implementation;
+
     @Autowired
     private SortBodyValidator sortBodyValidator;
 
@@ -30,40 +32,24 @@ public class SortEndpoint {
     }
 
     /**
+     * Endpoint Sort
      *
-     * @param String to be sorted
-     * @return String sorted
+     * JSON Request:
+     *      {
+     *          "text" : ""
+     *      }
+     *
+     * @param SortBodyEntity to be sorted
+     * @return SortBodyEntity Json formated with accession sorted
      */
     @RequestMapping(value = "",
             method = RequestMethod.POST,
             consumes = "application/json",
             produces="application/json")
-    public SortBodyRequest sort(@RequestBody @Valid SortBodyRequest body ){
+    public SortBodyEntity sort(@RequestBody @Valid SortBodyEntity body ){
 
         logger.debug("Request: " + body.getText());
-        List<String> result = new ArrayList<String>();
-
-        List<String> accessionList = AccessionHelper.splitAccessions(body.getText());
-        accessionList = AccessionHelper.sort(accessionList);
-
-        accessionList.forEach(item->{
-             if (result.isEmpty()) {
-                 result.add(item);
-                 return;
-             }
-
-            String lastItem = AccessionHelper.getLastItem(result.get(result.size()-1));
-            if (AccessionHelper.isSequentialAssessions(lastItem, item) ){
-                String startValue = AccessionHelper.getFirstItem(result.get(result.size()-1));
-                result.remove(result.size() - 1);
-                result.add(startValue + "-" + item);
-            }else {
-                result.add(item);
-            }
-        });
-
-
-        return new SortBodyRequest(String.join(",", result));
+        return new SortBodyEntity(implementation.execute(body.getText()));
     }
 
 }
