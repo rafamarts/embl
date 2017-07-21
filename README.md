@@ -12,14 +12,14 @@ If Build was successfully, a **EMBL0.1.jar** should be created into **target/ **
 
 To start the web service execute the *jar* file:
 ```shell
-java -jar EMBL01.jar
+java -jar EMBL0.1.jar
 ```
 
 > Note: The service start at port 8080.
 
 ### Usage
 
-The web service uses **POST ** request at local address http://localhost:8080/sort , sending a *JSON* like that:
+The web service uses **POST** request at local address http://localhost:8080/sort , sending a *JSON* like that:
 
 ```javascript
 {
