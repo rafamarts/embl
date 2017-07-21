@@ -110,6 +110,10 @@ public class AccessionHelper {
      */
     public static boolean isSequentialAccessions(String accessionA, String accessionB){
 
+        //Checking if one of them is null
+        if (accessionA == null || accessionB == null)
+            return false;
+
         //checking if is from same group and if are sequential
         if (isSameAccessionGroup(accessionA, accessionB) &&
                 isSequentialNumbers(accessionA, accessionB)){
@@ -147,6 +151,10 @@ public class AccessionHelper {
      * @return String
      */
     public static String getLastItem(String accession){
+
+        if (accession == null)
+            return "";
+
         //Check if has ranged separator
         if (accession.contains(ACCESSION_RANGE_SEPARATOR)){
             return getItem(accession, 1);//return the last part
@@ -162,6 +170,8 @@ public class AccessionHelper {
      * @return String
      */
     public static String getFirstItem(String accession){
+        if (accession == null)
+            return "";
         //Check if has ranged separator
         if (accession.contains(ACCESSION_RANGE_SEPARATOR)){
             return getItem(accession, 0);//return the fist part

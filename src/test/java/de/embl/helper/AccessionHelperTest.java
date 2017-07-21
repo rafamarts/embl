@@ -53,10 +53,34 @@ public class AccessionHelperTest {
     }
 
     @Test
+    public void splitAccessionsNull() throws Exception {
+
+        List<String> values = AccessionHelper.splitAccessions(null);
+
+        assertTrue("Error spliting accessions with null value.", values.isEmpty());
+    }
+
+    @Test
+    public void splitAccessionsInvalidText() throws Exception {
+
+        String input = "accessionInvalid";
+
+        List<String> values = AccessionHelper.splitAccessions(input);
+
+        assertTrue("Error spliting accessions withi invalid text.", values.size() == 1 && values.get(0).equals(input));
+    }
+
+    @Test
     public void isSequentialAssessions() throws Exception {
 
         assertTrue("Values is not sequential.", AccessionHelper.isSequentialAccessions("ERR000112", "ERR000113"));
         assertFalse("Values is sequential.", AccessionHelper.isSequentialAccessions("ERR000112", "ERR000115"));
+    }
+
+    @Test
+    public void isSequentialAssessionsNull() throws Exception {
+
+        assertFalse("Values is not sequential.", AccessionHelper.isSequentialAccessions("ERR000112", null));
     }
 
     @Test
@@ -67,10 +91,34 @@ public class AccessionHelperTest {
     }
 
     @Test
+    public void getLastItemNull() throws Exception {
+
+        assertTrue("Error getting Last Item with null value.", AccessionHelper.getLastItem(null).equals(""));
+    }
+
+    @Test
+    public void getLastItemInvalidText() throws Exception {
+        String input = "accessionInvalid";
+        assertTrue("Error getting Last Item with invalid text.", AccessionHelper.getLastItem(input).equals(input));
+    }
+
+    @Test
     public void getFirstItem() throws Exception {
 
         assertTrue("Error getting First Item. Attempt 1", AccessionHelper.getFirstItem("ERR000111-ERR000113").equals("ERR000111"));
         assertTrue("Error getting First Item. Attempt 2", AccessionHelper.getFirstItem("ERR000111").equals("ERR000111"));
+    }
+
+    @Test
+    public void getFirstItemNull() throws Exception {
+
+        assertTrue("Error getting First Item. Attempt 1", AccessionHelper.getFirstItem(null).equals(""));
+    }
+
+    @Test
+    public void getFirstItemInvalidText() throws Exception {
+        String input = "accessionInvalid";
+        assertTrue("Error getting First Item. Attempt 1", AccessionHelper.getFirstItem(input).equals(input));
     }
 
 }
