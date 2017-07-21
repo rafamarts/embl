@@ -6,7 +6,7 @@
 	<groupId>de.embl</groupId>
 	<artifactId>EMBL</artifactId>
 	<version>0.1</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging> <!-- embedded web server  -->
 
 	<name>EMBL</name>
 	<description>EMBL - Test</description>

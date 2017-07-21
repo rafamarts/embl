@@ -35,6 +35,16 @@ public class AccessionHelperTest {
     }
 
     @Test
+    public void sortNullValue() throws Exception {
+        List<String> values = null;
+
+        values = AccessionHelper.sort(values);
+
+        assertTrue("Result list can't be null.", values.isEmpty());
+
+    }
+
+    @Test
     public void splitAccessions() throws Exception {
 
         List<String> values = AccessionHelper.splitAccessions("A00000, A0001, ERR000111, ERR000112, ERR000113, ERR000115, ERR000116, ERR100114, ERR200000001, ERR200000002, ERR200000003, DRR2110012, SRR211001, ABCDEFG1");
@@ -45,8 +55,8 @@ public class AccessionHelperTest {
     @Test
     public void isSequentialAssessions() throws Exception {
 
-        assertTrue("Values is not sequential.", AccessionHelper.isSequentialAssessions("ERR000112", "ERR000113"));
-        assertFalse("Values is sequential.", AccessionHelper.isSequentialAssessions("ERR000112", "ERR000115"));
+        assertTrue("Values is not sequential.", AccessionHelper.isSequentialAccessions("ERR000112", "ERR000113"));
+        assertFalse("Values is sequential.", AccessionHelper.isSequentialAccessions("ERR000112", "ERR000115"));
     }
 
     @Test

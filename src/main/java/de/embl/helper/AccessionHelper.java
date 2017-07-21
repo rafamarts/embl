@@ -21,6 +21,9 @@ public class AccessionHelper {
     * @return List<String>
     * */
     public static List<String> sort(List<String> list){
+        if (list == null)
+            return new ArrayList<>();
+
         Collections.sort(list);
         return list;
     }
